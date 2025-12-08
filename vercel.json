@@ -1,0 +1,10 @@
+{
+  "buildCommand": "echo 'Frontend estático'",
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ]
+}
