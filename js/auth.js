@@ -1,5 +1,7 @@
 // ==================== AUTH PAGE INITIALIZATION ==================== //
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// API_BASE_URL é definida em config.js (carregado globalmente)
+// Fallback caso config.js não esteja carregado
+const API_BASE_URL = window.API_BASE_URL || localStorage.getItem('API_BASE_URL') || 'http://localhost:5000/api';
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeAuthForms();
