@@ -1,95 +1,186 @@
-# 🚀 Como Testar Localmente
+# 🚀 Teste Local - Passo a Passo
 
-## Pré-requisitos
-- Node.js 16+ instalado
-- MongoDB instalado localmente (ou Atlas)
+## ✅ Já Feito
+- Node.js v22 instalado ✓
+- Dependências do backend instaladas (`npm install`) ✓
+- Arquivo .env criado ✓
 
-## Testar Frontend
+## ❌ O que Falta
+- MongoDB Atlas configurado (você precisa fazer isso!)
+- Backend rodando (depende do MongoDB)
 
-```powershell
-cd c:\Users\202412170004\Desktop\LandPage
+---
 
-# Abrir em um servidor local (Python)
-python -m http.server 8000
+## 📝 Como Configurar MongoDB Atlas (RÁPIDO - 5 minutos)
 
-# Ou com Node.js (instale http-server primeiro)
-npx http-server
+### Passo 1: Criar Conta
+1. Abra: https://www.mongodb.com/cloud/atlas
+2. Clique **"Start Free"**
+3. Use Google/GitHub para criar conta (mais rápido)
 
-# Acesse: http://localhost:8000
+### Passo 2: Criar Cluster
+1. Clique **"Create a Database"**
+2. Escolha **"Shared"** (gratuito) ✓
+3. Escolha **AWS** e região **São Paulo** (ou perto de você)
+4. Nomeie: `flamezz-test`
+5. Clique **"Create"** e aguarde 2-3 minutos
+
+### Passo 3: Criar Usuário
+1. Vá para **"Database Access"**
+2. Clique **"Add New Database User"**
+3. **Username:** `testuser`
+4. **Password:** `testpass123` (copie para usar depois!)
+5. Clique **"Add User"**
+
+### Passo 4: Liberar IP
+1. Vá para **"Network Access"**
+2. Clique **"Add IP Address"**
+3. Escolha **"Allow access from anywhere"** (0.0.0.0/0)
+4. Clique **"Confirm"**
+
+### Passo 5: Obter Connection String
+1. Volte para o cluster
+2. Clique **"Connect"**
+3. Escolha **"Drivers"**
+4. Copie a string (parecerá com):
+```
+mongodb+srv://testuser:testpass123@flamezz-test.xxxxx.mongodb.net/?retryWrites=true&w=majority
 ```
 
-## Testar Backend
+### Passo 6: Atualizar .env
+Edite o arquivo `backend/.env` com a connection string real:
+```
+MONGODB_URI=mongodb+srv://testuser:testpass123@flamezz-test.xxxxx.mongodb.net/flamezz-shop-test?retryWrites=true&w=majority
+PORT=5000
+NODE_ENV=development
+JWT_SECRET=teste-chave-secreta-desenvolvimento-123abc
+JWT_EXPIRE=7d
+FRONTEND_URL=http://localhost:8000
+STRIPE_SECRET_KEY=sk_test_local
+STRIPE_PUBLIC_KEY=pk_test_local
+```
 
+⚠️ **SUBSTITUA:**
+- `testuser` → seu username MongoDB
+- `testpass123` → sua senha MongoDB
+- `flamezz-test.xxxxx` → sua string real do cluster
+
+---
+
+## 🏃 Depois de Configurar MongoDB
+
+### Terminal 1: Iniciar Backend
 ```powershell
 cd c:\Users\202412170004\Desktop\LandPage\backend
-
-# Instalar dependências
-npm install
-
-# Criar arquivo .env local
-# Copie .env.example para .env e preencha:
-# MONGODB_URI=mongodb://localhost:27017/flamezz-shop
-# JWT_SECRET=sua_chave_secreta
-
-# Iniciar servidor
 npm start
-
-# Servidor rodará em http://localhost:5000
 ```
 
-## Testar Rotas da API
+Você verá:
+```
+✓ Conectado ao MongoDB
+✓ Servidor rodando na porta 5000
+```
 
-Abra o terminal PowerShell e teste:
-
+### Terminal 2: Iniciar Frontend
 ```powershell
-# Listar produtos
-curl http://localhost:5000/api/products
-
-# Registrar novo usuário
-curl -X POST http://localhost:5000/api/auth/register `
-  -H "Content-Type: application/json" `
-  -d '{"name":"Test User","email":"test@test.com","password":"123456"}'
-
-# Login
-curl -X POST http://localhost:5000/api/auth/login `
-  -H "Content-Type: application/json" `
-  -d '{"email":"test@test.com","password":"123456"}'
+cd c:\Users\202412170004\Desktop\LandPage
+python -m http.server 8000
 ```
 
-## Variáveis de Ambiente Locais
-
-Crie um arquivo `.env` na pasta `backend`:
-
-```
-PORT=5000
-ENVIRONMENT=development
-MONGODB_URI=mongodb://localhost:27017/flamezz-shop
-JWT_SECRET=sua_chave_super_secreta_para_desenvolvimento_123
-FRONTEND_URL=http://localhost:8000
-NODE_ENV=development
-```
-
-## Troubleshooting
-
-### Erro: "Cannot find module 'express'"
+Ou se não tiver Python:
 ```powershell
-cd backend
-npm install
-```
-
-### Erro: "MongoDB connection failed"
-- Instale MongoDB Community: https://www.mongodb.com/try/download/community
-- Ou configure MONGODB_URI com sua URI do Atlas
-
-### Porta 5000 em uso
-```powershell
-# Encontrar processo na porta 5000
-lsof -i :5000
-
-# Matar processo (PID)
-kill -9 <PID>
+npx http-server
 ```
 
 ---
 
-**Após testar localmente, faça push para GitHub e Railway fará deploy automático!** 🎉
+## 🌐 Acessar o Site
+
+- **Homepage:** http://localhost:8000
+- **Login:** http://localhost:8000/login.html
+- **Sobre:** http://localhost:8000/about.html
+
+---
+
+## ✅ Testar Funcionalidades
+
+### 1. Criar Conta
+1. Abra http://localhost:8000/login.html
+2. Clique em **"Crie uma agora"**
+3. Preencha:
+   - Nome: Seu Nome
+   - Email: seu@email.com
+   - Senha: 123456
+4. Clique **"Criar Conta"**
+
+Se aparecer **"Conta criada com sucesso!"**, está funcionando! ✅
+
+### 2. Fazer Login
+1. Clique **"Faça login"**
+2. Email: seu@email.com
+3. Senha: 123456
+4. Clique **"Entrar"**
+
+Se der OK, tudo está 100% funcional! 🎉
+
+### 3. Testar API Direto
+Abra o DevTools (F12) e execute no Console:
+
+```javascript
+// Teste 1: Listar produtos
+fetch('http://localhost:5000/api/products')
+  .then(r => r.json())
+  .then(d => console.log(d))
+
+// Teste 2: Registrar usuário
+fetch('http://localhost:5000/api/auth/register', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'Test User',
+    email: 'test@test.com',
+    password: '123456'
+  })
+})
+  .then(r => r.json())
+  .then(d => console.log(d))
+```
+
+---
+
+## 🐛 Se algo não funcionar
+
+### Erro: "Cannot read property 'host' of null"
+- Seu MongoDB URI está inválida
+- Verifique se copiou TUDO corretamente do Atlas
+
+### Erro: "MongoDB connection timeout"
+- IP não foi liberado em Network Access
+- Confirme que tem 0.0.0.0/0
+
+### Erro: "API is not responding"
+- Backend não está rodando
+- Execute `npm start` no terminal
+
+### Erro: "404 login.html"
+- Você não está na pasta certa
+- Execute `cd c:\Users\202412170004\Desktop\LandPage` primeiro
+
+---
+
+## 🎯 Checklist
+
+- [ ] Conta MongoDB Atlas criada
+- [ ] Cluster criado
+- [ ] Usuário criado
+- [ ] IP liberado (0.0.0.0/0)
+- [ ] Connection String copiada
+- [ ] .env atualizado com connection string real
+- [ ] Backend iniciado com sucesso (`npm start`)
+- [ ] Frontend rodando (port 8000)
+- [ ] Login/Registro testado
+- [ ] API respondendo (DevTools Console)
+
+---
+
+**Depois de testar tudo funcionando localmente, você estará pronto para produção!** 🚀
